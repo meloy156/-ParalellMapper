@@ -21,7 +21,6 @@ jobs:
           distribution: 'temurin'
 
       - name: Compile with javac
-        # Внимание: в Linux пути разделяются двоеточием (:) а не точкой с запятой (;)
         run: |
           mkdir -p out
           javac -cp "lib/*" -d out src/iterative/*.java
