@@ -65,7 +65,6 @@
 ### 1. Высокоуровневый API (`IterativeParallelism`)
 Идеально подходит для параллельной фильтрации, маппинга и поиска по коллекциям. Вам не нужно думать о потоках — просто опишите логику.
 
-```java
 import iterative.ParallelMapperImpl;
 import iterative.IterativeParallelism;
 import java.util.List;
@@ -88,3 +87,103 @@ public class Example {
         }
     }
 }
+
+
+2. Низкоуровневый API (ParallelMapperImpl)
+Если вам нужен полный контроль над задачами (например, для асинхронной загрузки данных из сети).
+
+```java
+import iterative.ParallelMapperImpl;
+import java.util.List;
+
+public class LowLevelExample {
+    public static void main(String[] args) throws InterruptedException {
+        ParallelMapperImpl pool = new ParallelMapperImpl(8);
+        
+        List<String> urls = List.of(
+            "https://example.com/data1", 
+            "https://example.com/data2"
+        );
+        
+        // Асинхронно скачиваем данные в 8 потоков
+        List<String> contents = pool.map(url -> {
+            // Имитация долгой сетевой операции
+            Thread.sleep(100); 
+            return "Content of " + url;
+        }, urls);
+        
+        pool.close(); // Корректно останавливаем потоки
+    }
+}
+
+
+```
+🛠 Установка и сборка
+Требования:
+
+JDK 17 или выше (проект использует современные фичи, такие как try-with-resources и лямбды).
+
+Сторонние JAR-библиотеки тестов (лежат в папке lib/).
+
+Шаг 1. Клонирование репозитория:
+
+```bash
+git clone https://github.com/your-username/parallel-mapper.git
+cd parallel-mapper
+```
+
+Шаг 2. Создание директории для классов:
+Создайте папку out, куда будут компилироваться .class файлы:
+``bash
+bash
+mkdir out
+``
+
+Шаг 3. Компиляция (Windows):
+
+```cmd
+javac -cp "lib/*" -d out src/iterative/*.java
+```
+Шаг 3. Компиляция (Linux / macOS):
+
+```bash
+javac -cp "lib/*" -d out src/iterative/*.java
+Примечание: Обратите внимание на разделитель Classpath. В Windows это ;, в Unix-системах — :. Флаг -d out указывает компилятору, куда складывать скомпилированные файлы.
+```
+
+Шаг 4. Запуск (пример):
+Если у вас есть свой Main класс, запустить его можно так:
+
+```cmd
+java -cp "out;lib/*" your.package.Main
+```
+
+🤝 Как внести вклад
+Мы всегда рады новым идеям и улучшениям! Если вы хотите внести свой вклад в развитие проекта:
+
+Сделайте форк (Fork) репозитория.
+
+Создайте ветку для своей фичи (git checkout -b feature/AmazingFeature).
+
+Закоммитьте изменения (git commit -m 'Add some AmazingFeature').
+
+Отправьте изменения в ветку (git push origin feature/AmazingFeature).
+
+Откройте Pull Request.
+
+Пожалуйста, убедитесь, что ваш код проходит компиляцию и не ломает существующую логику.
+
+📄 Лицензия
+Этот проект распространяется под лицензией MIT.
+
+Что это значит для вас:
+
+✅ Вы можете свободно использовать этот код в коммерческих и личных целях.
+
+✅ Вы можете модифицировать его по своему усмотрению.
+
+✅ Вы можете распространять его.
+
+Единственное условие: Вы должны сохранить оригинальное упоминание об авторских правах и текст лицензии в своем проекте.
+
+Подробности смотрите в файле LICENSE.
